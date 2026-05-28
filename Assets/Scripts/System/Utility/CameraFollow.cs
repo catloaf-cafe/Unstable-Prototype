@@ -7,10 +7,10 @@ public class CameraFollow : MonoBehaviour
     public static CameraFollow Instance;
     public Collider2D activeBound;
 
-    [Header("Zoom")]
-    [SerializeField] float zoomSpeed = 20f;
-    [SerializeField] float zoomOut = 5f;
-    [SerializeField] float zoomIn = 5f;
+    // [Header("Zoom")]
+    // [SerializeField] float zoomSpeed = 20f;
+    // [SerializeField] float zoomOut = 5f;
+    // [SerializeField] float zoomIn = 5f;
 
     [Header("Pan")]
     [SerializeField] float panSpeed = 8f;
@@ -23,8 +23,8 @@ public class CameraFollow : MonoBehaviour
     private CinemachineVirtualCamera vcam;
     private CinemachineConfiner2D confiner;
     private CinemachineFramingTransposer transposer;
-    private float baseFOV;
-    private float zoomModifier = 0f;
+    // private float baseFOV;
+    // private float zoomModifier = 0f;
     private Vector2 manualOffset;
 
     private void Awake()
@@ -40,7 +40,7 @@ public class CameraFollow : MonoBehaviour
         confiner = GetComponent<CinemachineConfiner2D>(); 
         transposer = vcam.GetCinemachineComponent<CinemachineFramingTransposer>();
 
-        baseFOV = vcam.m_Lens.FieldOfView;
+        // baseFOV = vcam.m_Lens.FieldOfView;
     }
 
     private void OnEnable() => SceneManager.sceneLoaded += OnSceneLoaded;
@@ -68,10 +68,8 @@ public class CameraFollow : MonoBehaviour
                 confiner.m_BoundingShape2D = bounds;
                 confiner.InvalidateCache(); 
             }
-        }
-        else
-        {
-            Debug.Log($"CameraFollow: No object with tag 'Confiner' found in {scene.name}.");
+
+            Debug.Log($"CameraFollow: Found object with tag 'Confiner' in {scene.name}.");
         }
     }
 
@@ -85,27 +83,27 @@ public class CameraFollow : MonoBehaviour
         }
     }
 
-    void HandleZoom()
-    {
-        float zoomInput = InputManager.Instance.Controls.Camera.Zoom.ReadValue<float>();
+    // void HandleZoom()
+    // {
+    //     float zoomInput = InputManager.Instance.Controls.Camera.Zoom.ReadValue<float>();
 
-        if (Mathf.Abs(zoomInput) > 0.01f)
-        {
-            zoomModifier += zoomInput * zoomSpeed * Time.deltaTime;
-        }
+    //     if (Mathf.Abs(zoomInput) > 0.01f)
+    //     {
+    //         zoomModifier += zoomInput * zoomSpeed * Time.deltaTime;
+    //     }
 
-        zoomModifier = Mathf.Clamp(zoomModifier, -zoomOut, zoomIn);
+    //     zoomModifier = Mathf.Clamp(zoomModifier, -zoomOut, zoomIn);
 
-        float targetFOV = baseFOV - zoomModifier;
+    //     float targetFOV = baseFOV - zoomModifier;
 
-        vcam.m_Lens.FieldOfView = Mathf.Lerp(vcam.m_Lens.FieldOfView, targetFOV, Time.deltaTime * zoomSpeed * 10f);
+    //     vcam.m_Lens.FieldOfView = Mathf.Lerp(vcam.m_Lens.FieldOfView, targetFOV, Time.deltaTime * zoomSpeed * 10f);
 
-        // Trick the Confiner2D by updating OrthographicSize
-        // formula: OrthoSize = Distance * tan(FOV / 2)
-        float distance = Mathf.Abs(vcam.transform.position.z); 
-        float halfFOVRad = vcam.m_Lens.FieldOfView * 0.5f * Mathf.Deg2Rad;
-        vcam.m_Lens.OrthographicSize = distance * Mathf.Tan(halfFOVRad);
-    }
+    //     // Trick the Confiner2D by updating OrthographicSize
+    //     // formula: OrthoSize = Distance * tan(FOV / 2)
+    //     float distance = Mathf.Abs(vcam.transform.position.z); 
+    //     float halfFOVRad = vcam.m_Lens.FieldOfView * 0.5f * Mathf.Deg2Rad;
+    //     vcam.m_Lens.OrthographicSize = distance * Mathf.Tan(halfFOVRad);
+    // }
 
     void HandlePan()
     {
